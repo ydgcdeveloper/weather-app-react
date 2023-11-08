@@ -9,6 +9,7 @@ export const WeatherApp = () => {
   const [city, setCity] = useState("");
   const [fetchError, setFetchError] = useState(null);
   const [dataWeather, setDataWeather] = useState(null);
+  const [isLoadingData, setIsLoadingData] = useState(false);
 
   const handleCityChange = (e) => {
     setCity(e.target.value);
@@ -40,7 +41,7 @@ export const WeatherApp = () => {
     <div className="container">
       <h1>Weather App</h1>
       <form onSubmit={handleSubmit}>
-        <input type="text" value={city} onChange={handleCityChange} />
+        <input type="text" placeholder="Write a city name" value={city} onChange={handleCityChange} />
         <button type="submit">Search</button>
       </form>
       {fetchError && <h1 className="text-not-found">{fetchError}</h1>}
