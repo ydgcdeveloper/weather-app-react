@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./styles/weatherApp.css";
+import { ImSpinner6 } from "react-icons/im";
 
 export const WeatherApp = () => {
   const urlBase = "https://api.openweathermap.org/data/2.5/weather";
@@ -21,6 +22,7 @@ export const WeatherApp = () => {
   };
 
   const fetchWeather = async () => {
+    setIsLoadingData(true);
     try {
       const response = await fetch(`${urlBase}?q=${city}&appid=${API_KEY}`);
       const data = await response.json();
@@ -28,12 +30,13 @@ export const WeatherApp = () => {
         setFetchError(data.message);
         setDataWeather(null);
       } else {
-        console.log(data);
         setDataWeather(data);
         setFetchError(null);
       }
+      setIsLoadingData(false);
     } catch (error) {
-      console.error("Error here", error);
+      setFetchError(error.message);
+      setIsLoadingData(false);
     }
   };
 
@@ -41,10 +44,21 @@ export const WeatherApp = () => {
     <div className="container">
       <h1>Weather App</h1>
       <form onSubmit={handleSubmit}>
-        <input type="text" placeholder="Write a city name" value={city} onChange={handleCityChange} />
-        <button type="submit">Search</button>
+        <input
+          type="text"
+          placeholder="Write a city name"
+          value={city}
+          onChange={handleCityChange}
+        />
+        <button type="submit">
+          Search
+          <ImSpinner6
+            visibility={isLoadingData ? "visble" : "hidden"}
+            className="spinner rotate"
+          ></ImSpinner6>
+        </button>
       </form>
-      {fetchError && <h1 className="text-not-found">{fetchError}</h1>}
+      {fetchError && <h1 className="error">{fetchError}</h1>}
       {dataWeather && (
         <div>
           <h2>{dataWeather?.name}</h2>

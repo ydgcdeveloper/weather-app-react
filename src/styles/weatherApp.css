@@ -4,7 +4,7 @@ body {
   margin: 0;
   padding: 0;
   text-align: center;
-  background-color: rgb(50, 124, 214);
+  background-color: rgb(243, 243, 107);
 }
 
 .container {
@@ -31,12 +31,14 @@ input[type="text"] {
 }
 
 button {
-  padding: 10px 20px;
-  background-color: #20db1a;
+  padding: 10px 16px;
+  background-color: #007bff;
   color: #fff;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
 }
 
 button:hover {
@@ -58,9 +60,26 @@ img {
   margin-top: 10px;
 }
 
-.text-not-found {
+.error {
   text-transform: capitalize;
-  color: rgb(80, 212, 212);
+  color: red
+}
+
+.spinner {
+  margin-left: 6px;
+}
+
+.rotate {
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Estilos para móviles */
@@ -74,7 +93,9 @@ img {
   }
 
   button {
-    padding: 8px 16px;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
   }
 
   h2 {
