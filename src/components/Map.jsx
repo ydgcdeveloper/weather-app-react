@@ -38,8 +38,6 @@ export const Map = () => {
   }, [setIsLoadingData, setCity, setFetchError, setDataWeather]);
 
   const addMarker = useCallback((lng, lat) => {
-    lng = lng.toFixed(2)
-    lat = lat.toFixed(2)
     if (!marker.current) {
       marker.current = new mapboxgl.Marker()
         .setLngLat([lng, lat])

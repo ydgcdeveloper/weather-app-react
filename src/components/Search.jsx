@@ -69,7 +69,7 @@ export const Search = () => {
           {fetchError}
         </h1>
       )}
-      {!dataWeather && <div className="h-[50vh]"></div>}
+      {/* {!dataWeather && <div className="h-[50vh]"></div>} */}
       {dataWeather && <DataWeather dataWeather={dataWeather} />}
     </div>
   );
