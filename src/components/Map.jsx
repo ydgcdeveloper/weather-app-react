@@ -1,5 +1,5 @@
 import mapboxgl from "mapbox-gl";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useAppStore } from "../store/appStore";
 import { fetchWeather } from "../shared/fetchService";
 const access_token =
@@ -9,20 +9,18 @@ mapboxgl.accessToken = access_token;
 export const Map = () => {
   const mapContainer = useRef(null);
   const map = useRef(null);
-  const [lng, setLng] = useState(-70.9);
-  const [lat, setLat] = useState(42.35);
+  const marker = useRef(null);
+
+  const [lng, setLng] = useState(-83.29);
+  const [lat, setLat] = useState(15.027);
   const [zoom, setZoom] = useState(9);
 
-  const { 
-    setCity, 
-    setFetchError, 
-    setDataWeather,
-    setIsLoadingData
-} = useAppStore((state) => state);
+  const { setCity, setFetchError, setDataWeather, setIsLoadingData } =
+    useAppStore((state) => state);
 
-const getWeatherFromMap = async (place) => {
+  const getWeatherFromMap = useCallback(async (place) => {
     setIsLoadingData(true);
-    setCity(place)
+    setCity(place);
     try {
       const weather = await fetchWeather(place);
       if (weather?.cod === "404") {
@@ -37,10 +35,22 @@ const getWeatherFromMap = async (place) => {
       setFetchError(error.message);
       setIsLoadingData(false);
     }
-  };
+  }, [setIsLoadingData, setCity, setFetchError, setDataWeather]);
+
+  const addMarker = useCallback((lng, lat) => {
+    lng = lng.toFixed(2)
+    lat = lat.toFixed(2)
+    if (!marker.current) {
+      marker.current = new mapboxgl.Marker()
+        .setLngLat([lng, lat])
+        .addTo(map.current);
+    } else {
+      marker.current.setLngLat([lng, lat]);
+    }
+  }, []);
 
   useEffect(() => {
-    if (map.current) return; // initialize map only once
+    if (map.current) return;
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: "mapbox://styles/mapbox/streets-v12",
@@ -48,42 +58,55 @@ const getWeatherFromMap = async (place) => {
       zoom: zoom,
     });
 
-    // Add a click event listener to the map
-    map.current.on("click", (e) => {
-      // Get the geographical coordinates of the point where the user clicked
+    map.current.on("move", () => {
+      setLng(map.current.getCenter().lng.toFixed(4));
+      setLat(map.current.getCenter().lat.toFixed(4));
+      setZoom(map.current.getZoom().toFixed(2));
+    });
+
+    map.current.on("click", async (e) => {
       const { lng, lat } = e.lngLat;
 
-      // Use Mapbox Geocoding API to get the location name based on the coordinates
-      // Replace 'your_access_token' with your actual Mapbox access token
-      fetch(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${access_token}`
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          // Extract the location name from the API response
-          const locationName = data.features[2].place_name;
+      try {
+        const response = await fetch(
+          `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${access_token}`
+        );
 
-          // Log or do something with the location name
-          console.log("Location Name:", locationName, data);
+        if (response.ok) {
+          const data = await response.json();
+          const locationName = data?.features[2]?.place_name;
+
+          if (!locationName) return;
           getWeatherFromMap(locationName);
-        })
-        .catch((error) => {
-          console.error("Error fetching location information:", error);
-        });
-      console.log("Click", lng, lat);
-    });
-  });
 
-  const resizeHandler = () => {
+          addMarker(lng, lat);
+        } else {
+          throw new Error("Network request failed");
+        }
+      } catch (error) {
+        // console.error("Error fetching location information:", error);
+      }
+    });
+  }, [addMarker, getWeatherFromMap, lng, lat, zoom]);
+
+  const resizeHandler = useCallback(() => {
     if (map.current) {
       map.current.resize();
     }
-  };
+  }, []);
 
-  window.addEventListener("resize", resizeHandler);
+  useEffect(() => {
+    window.addEventListener("resize", resizeHandler);
+    return () => {
+      window.removeEventListener("resize", resizeHandler);
+    };
+  }, [resizeHandler]);
 
   return (
     <div className="flex flex-col flex-1 gap-2 h-max bg-gray-200">
+      <div className="py-1 px-3 z-10 absolute mt-3 right-3 rounded-md font-mono bg-slate-700 text-yellow-50">
+        <span>Longitude: {lng}</span> | <span>Latitude: {lat}</span> |{" "} <span>Zoom: {zoom}</span>
+      </div>
       <div
         ref={mapContainer}
         className="map-container"

@@ -1,9 +1,5 @@
-/* Estilos generales */
 body {
   font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  text-align: center;
 }
 
 #app {
@@ -12,46 +8,8 @@ body {
     "header header header"
     "map map form"
     "map map form";
-  grid-template-columns: auto 1fr;
+  grid-template-columns: auto 1fr 35%;
   grid-template-rows: 6vh auto;
-}
-
-.container {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-h1 {
-  font-size: 24px;
-  margin-bottom: 20px;
-}
-
-form {
-  display: flex;
-  margin-bottom: 20px;
-}
-
-input[type="text"] {
-  flex: 1;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-button {
-  padding: 10px 16px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-}
-
-button:hover {
-  background-color: #0056b3;
 }
 
 h2 {
@@ -61,12 +19,6 @@ h2 {
 
 p {
   margin-bottom: 5px;
-}
-
-img {
-  width: 150px;
-  height: 150px;
-  margin-top: 10px;
 }
 
 .error {
@@ -91,32 +43,3 @@ img {
   }
 }
 
-/* Estilos para móviles */
-@media (max-width: 600px) {
-  h1 {
-    font-size: 20px;
-  }
-
-  input[type="text"] {
-    font-size: 14px;
-  }
-
-  button {
-    padding: 8px 12px;
-    display: flex;
-    align-items: center;
-  }
-
-  h2 {
-    font-size: 18px;
-  }
-
-  p {
-    font-size: 14px;
-  }
-
-  img {
-    width: 40px;
-    height: 40px;
-  }
-}

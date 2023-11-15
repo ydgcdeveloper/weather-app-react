@@ -5,17 +5,16 @@ import { DataWeather } from "./DataWeather";
 import { fetchWeather } from "../shared/fetchService";
 
 export const Search = () => {
-
-  const { 
-    city, 
-    setCity, 
-    fetchError, 
-    setFetchError, 
-    dataWeather, 
+  const {
+    city,
+    setCity,
+    fetchError,
+    setFetchError,
+    dataWeather,
     setDataWeather,
     isLoadingData,
-    setIsLoadingData
-} = useAppStore((state) => state);
+    setIsLoadingData,
+  } = useAppStore((state) => state);
 
   const handleCityChange = (e) => {
     setCity(e.target.value);
@@ -45,15 +44,19 @@ export const Search = () => {
   };
 
   return (
-    <div className="container bg-gray-200">
-      <form onSubmit={handleSubmit}>
+    <div className="flex flex-col flex-1 p-5 bg-gray-200">
+      <form className="flex mb-5" onSubmit={handleSubmit}>
         <input
+          className="flex-1 p-3 rounded-md border border-gray-300 lg:text-base sm:text-sm"
           type="text"
           placeholder="Write a city name"
           value={city}
           onChange={handleCityChange}
         />
-        <button type="submit">
+        <button
+          type="submit"
+          className="flex items-center rounded-md bg-blue-600 hover:bg-blue-700 p-2 text-white ml-1"
+        >
           Search
           <ImSpinner6
             visibility={isLoadingData ? "visble" : "hidden"}
@@ -61,7 +64,12 @@ export const Search = () => {
           ></ImSpinner6>
         </button>
       </form>
-      {fetchError && <h1 className="error">{fetchError}</h1>}
+      {fetchError && (
+        <h1 className="text-center text-red-600 font-bold text-2xl capitalize">
+          {fetchError}
+        </h1>
+      )}
+      {!dataWeather && <div className="h-[50vh]"></div>}
       {dataWeather && <DataWeather dataWeather={dataWeather} />}
     </div>
   );
