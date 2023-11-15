@@ -4,7 +4,16 @@ body {
   margin: 0;
   padding: 0;
   text-align: center;
-  background-color: rgb(243, 243, 107);
+}
+
+#app {
+  display: grid;
+  grid-template-areas:
+    "header header header"
+    "map map form"
+    "map map form";
+  grid-template-columns: auto 1fr;
+  grid-template-rows: 6vh auto;
 }
 
 .container {
@@ -62,7 +71,7 @@ img {
 
 .error {
   text-transform: capitalize;
-  color: red
+  color: red;
 }
 
 .spinner {
