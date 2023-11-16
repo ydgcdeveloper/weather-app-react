@@ -2,6 +2,7 @@ import mapboxgl from "mapbox-gl";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAppStore } from "../store/appStore";
 import { fetchWeather } from "../shared/fetchService";
+import 'mapbox-gl/dist/mapbox-gl.css'
 const access_token =
   "pk.eyJ1IjoieWRnY2RldmVsb3BlciIsImEiOiJja3lkZTEwY24wMTgwMzBtdG9xcTgyOW54In0.jNT6jyPxIBUG3iMjD9Rtdg";
 mapboxgl.accessToken = access_token;
@@ -37,21 +38,24 @@ export const Map = () => {
     }
   }, [setIsLoadingData, setCity, setFetchError, setDataWeather]);
 
-  const addMarker = useCallback((lng, lat) => {
+  const addMarker = useCallback((markerLng, markerLat) => {
+    const markerCoordinates = [markerLng, markerLat];
+  
     if (!marker.current) {
       marker.current = new mapboxgl.Marker()
-        .setLngLat([lng, lat])
+        .setLngLat(markerCoordinates)
         .addTo(map.current);
     } else {
-      marker.current.setLngLat([lng, lat]);
+      marker.current.setLngLat(markerCoordinates);
     }
+    console.log('marker', marker);
   }, []);
 
   useEffect(() => {
     if (map.current) return;
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
-      style: "mapbox://styles/mapbox/streets-v12",
+      style: "mapbox://styles/mapbox/streets-v11",
       center: [lng, lat],
       zoom: zoom,
     });
@@ -63,11 +67,12 @@ export const Map = () => {
     });
 
     map.current.on("click", async (e) => {
-      const { lng, lat } = e.lngLat;
+      const clicLng = e.lngLat.lng;
+      const clicLat = e.lngLat.lat;
 
       try {
         const response = await fetch(
-          `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${access_token}`
+          `https://api.mapbox.com/geocoding/v5/mapbox.places/${clicLng},${clicLat}.json?access_token=${access_token}`
         );
 
         if (response.ok) {
@@ -77,7 +82,8 @@ export const Map = () => {
           if (!locationName) return;
           getWeatherFromMap(locationName);
 
-          addMarker(lng, lat);
+          console.log('clic: ', clicLng, clicLat);
+          addMarker(clicLng, clicLat);
         } else {
           throw new Error("Network request failed");
         }

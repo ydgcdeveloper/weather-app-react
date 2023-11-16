@@ -17,14 +17,14 @@ export const WeatherApp = () => {
     //   </div>
     // </div>
 
-    <div className="grid grid-cols-1 md:grid-cols-3 relative h-screen md:overflow-hidden">
-      <header className="col-span-1 md:col-span-3 row-auto flex">
+    <div className="grid md:grid-cols-3 relative h-screen md:overflow-hidden">
+      <header className="col-span-1 md:col-span-3 flex md:h-[7vh]">
         <Header />
       </header>
-      <div className="col-span-1 md:col-span-1 row-span-2 flex">
+      <div className="col-span-1 md:col-span-1 row-span-6 flex md:h-[93vh]">
         <Search />
       </div>
-      <div className="col-span-1 row-span-1 md:col-span-2 md:row-span-2 flex flex-col">
+      <div className="col-span-1 md:col-span-2 row-span-6 flex flex-col md:h-[93vh]">
         <Map />
       </div>
     </div>
